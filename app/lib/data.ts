@@ -15,13 +15,13 @@ export async function fetchRevenue() {
   try {
     // Artificially delay a response for demo purposes.
     // Don't do this in production :)
-
-    // console.log('Fetching revenue data...');
-    // await new Promise((resolve) => setTimeout(resolve, 3000));
+// console.log("Fetching Cards data...");
+// await new Promise((resolve) => setTimeout(resolve, 3000));
+    
 
     const data = await sql<Revenue[]>`SELECT * FROM revenue`;
 
-    // console.log('Data fetch completed after 3 seconds.');
+    console.log('Data fetch completed after 3 seconds.');
 
     return data;
   } catch (error) {
@@ -32,6 +32,8 @@ export async function fetchRevenue() {
 
 export async function fetchLatestInvoices() {
   try {
+
+   
     const data = await sql<LatestInvoiceRaw[]>`
       SELECT invoices.amount, customers.name, customers.image_url, customers.email, invoices.id
       FROM invoices
@@ -55,6 +57,8 @@ export async function fetchCardData() {
     // You can probably combine these into a single SQL query
     // However, we are intentionally splitting them to demonstrate
     // how to initialize multiple queries in parallel with JS.
+
+
     const invoiceCountPromise = sql`SELECT COUNT(*) FROM invoices`;
     const customerCountPromise = sql`SELECT COUNT(*) FROM customers`;
     const invoiceStatusPromise = sql`SELECT
@@ -216,3 +220,80 @@ export async function fetchFilteredCustomers(query: string) {
     throw new Error('Failed to fetch customer table.');
   }
 }
+
+export async function fetchBusinesses() {
+  try {
+    const businesses = await sql<
+      {
+        id: string;
+        name: string;
+        email: string;
+        address: string;
+        phone: string;
+        opening_hours: string;
+        image_url: string;
+      }[]
+    >`
+      SELECT
+        id,
+        name,
+        email,
+        address,
+        phone,
+        opening_hours,
+        image_url
+      FROM businesses
+      ORDER BY name ASC
+    `;
+
+    return businesses;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch all businesses.");
+  }
+}
+
+export async function fetchFilteredBusinesses(
+  query: string,
+  currentPage: number
+) {
+  const offset = (currentPage - 1) * ITEMS_PER_PAGE;
+
+  try {
+    const businesses = await sql<
+      {
+        id: string;
+        name: string;
+        email: string;
+        address: string;
+        phone: string;
+        opening_hours: string;
+        image_url: string;
+      }[]
+    >`
+      SELECT
+        id,
+        name,
+        email,
+        address,
+        phone,
+        opening_hours,
+        image_url
+      FROM businesses
+      WHERE
+        name ILIKE ${`%${query}%`} OR
+        email ILIKE ${`%${query}%`} OR
+        address ILIKE ${`%${query}%`} OR
+        phone ILIKE ${`%${query}%`} OR
+        opening_hours ILIKE ${`%${query}%`}
+      ORDER BY name ASC
+      LIMIT ${ITEMS_PER_PAGE} OFFSET ${offset}
+    `;
+
+    return businesses;
+  } catch (err) {
+    console.error("Database Error:", err);
+    throw new Error("Failed to fetch businesses.");
+  }
+}
+

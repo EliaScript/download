@@ -1,11 +1,11 @@
 import bcrypt from 'bcrypt';
 import postgres from 'postgres';
-import { invoices, customers, revenue, users } from '../lib/placeholder-data';
+import { invoices, customers, revenue, users, businesses } from '../lib/placeholder-data';
 
 const sql = postgres(process.env.POSTGRES_URL!, { ssl: 'require' });
 
 async function seedUsers() {
-  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+  // await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
   await sql`
     CREATE TABLE IF NOT EXISTS users (
       id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
@@ -30,7 +30,7 @@ async function seedUsers() {
 }
 
 async function seedInvoices() {
-  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+  //await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
   await sql`
     CREATE TABLE IF NOT EXISTS invoices (
@@ -56,7 +56,7 @@ async function seedInvoices() {
 }
 
 async function seedCustomers() {
-  await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
+  //await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
   await sql`
     CREATE TABLE IF NOT EXISTS customers (
@@ -101,17 +101,53 @@ async function seedRevenue() {
   return insertedRevenue;
 }
 
+async function seedBusinesses() {
+  // Create table if it doesn't exist
+  await sql`
+    CREATE TABLE IF NOT EXISTS businesses (
+      id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+      name VARCHAR(255) NOT NULL,
+      email VARCHAR(255) NOT NULL,
+      address VARCHAR(500) NOT NULL,
+      phone VARCHAR(50) NOT NULL,
+      opening_hours VARCHAR(255) NOT NULL,
+      image_url VARCHAR(255)
+    );
+  `;
+
+  // Insert placeholder businesses
+  const insertedBusinesses = await Promise.all(
+    businesses.map(
+      (b) => sql`
+        INSERT INTO businesses (id, name, email, address, phone, opening_hours, image_url)
+        VALUES (${b.id}, ${b.name}, ${b.email}, ${b.address}, ${b.phone}, ${b.opening_hours}, ${b.image_url})
+        ON CONFLICT (id) DO NOTHING;
+      `
+    )
+  );
+
+  return insertedBusinesses;
+}
+
 export async function GET() {
   try {
-    const result = await sql.begin((sql) => [
-      seedUsers(),
-      seedCustomers(),
-      seedInvoices(),
-      seedRevenue(),
-    ]);
+    // Create extension once, outside the transaction
+    await sql`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`;
 
-    return Response.json({ message: 'Database seeded successfully' });
+    await sql.begin(async (sql) => {
+      await seedUsers();
+      await seedCustomers();
+      await seedInvoices();
+      await seedRevenue();
+      await seedBusinesses();
+    });
+
+    return Response.json({ message: "Database seeded successfully" });
   } catch (error) {
+    console.error(error);
     return Response.json({ error }, { status: 500 });
   }
 }
+
+
+
