@@ -102,6 +102,29 @@ export default function DashboardSkeleton() {
   );
 }
 
+export function BusinessCardSkeleton() {
+  return (
+    <div className="rounded-xl bg-gray-50 shadow-sm p-4">
+      {/* Top section: image + title */}
+      <div className="flex items-center gap-4">
+        <div
+          className={`${shimmer} relative h-[60px] w-[60px] overflow-hidden rounded-lg bg-gray-100`}
+        />
+        <div className={`${shimmer} h-5 w-32 rounded-md bg-gray-100`} />
+      </div>
+
+      {/* Details section */}
+      <div className="mt-4 space-y-2 text-sm">
+        <div className={`${shimmer} h-4 w-48 rounded-md bg-gray-100`} />
+        <div className={`${shimmer} h-4 w-40 rounded-md bg-gray-100`} />
+        <div className={`${shimmer} h-4 w-36 rounded-md bg-gray-100`} />
+        <div className={`${shimmer} h-4 w-28 rounded-md bg-gray-100`} />
+      </div>
+    </div>
+  );
+}
+
+
 export function TableRowSkeleton() {
   return (
     <tr className="w-full border-b border-gray-100 last-of-type:border-none [&:first-child>td:first-child]:rounded-tl-lg [&:first-child>td:last-child]:rounded-tr-lg [&:last-child>td:first-child]:rounded-bl-lg [&:last-child>td:last-child]:rounded-br-lg">

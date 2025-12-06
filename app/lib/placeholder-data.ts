@@ -144,4 +144,52 @@ const revenue = [
   { month: 'Dec', revenue: 4800 },
 ];
 
-export { users, customers, invoices, revenue };
+const businesses = [
+  {
+    id: "b1f8e0d2-9c2e-4a1f-b0a3-1f2d7c8e9f01",
+    name: "Sunny Coffee House",
+    email: "contact@sunnycoffee.com",
+    address: "123 Sunshine Blvd, Seattle, WA",
+    phone: "+1 206-555-0123",
+    opening_hours: "Mon-Fri 7:00-19:00, Sat-Sun 8:00-18:00",
+    image_url: "/businesses/sunny-coffee.png",
+  },
+  {
+    id: "c2d7f4a3-7b8d-4e2a-9d01-4f6a2c3b7e05",
+    name: "Green Leaf Grocery",
+    email: "info@greenleafgrocery.com",
+    address: "456 Oak Street, Portland, OR",
+    phone: "+1 503-555-0198",
+    opening_hours: "Daily 8:00-22:00",
+    image_url: "/businesses/green-leaf.png",
+  },
+  {
+    id: "d3e6c7b8-6a9f-4c3b-b1a2-7d8e9f0c1a23",
+    name: "TechFix Repairs",
+    email: "support@techfix.com",
+    address: "789 Silicon Ave, San Francisco, CA",
+    phone: "+1 415-555-0177",
+    opening_hours: "Mon-Fri 9:00-18:00",
+    image_url: "/businesses/techfix.png",
+  },
+  {
+    id: "e4f7b8c9-5d6e-4f2b-a1c0-3b2d1f7e8c90",
+    name: "Happy Paws Pet Store",
+    email: "hello@happypaws.com",
+    address: "321 Paw Street, Austin, TX",
+    phone: "+1 512-555-0144",
+    opening_hours: "Mon-Sat 10:00-19:00, Sun 11:00-17:00",
+    image_url: "/businesses/happy-paws.png",
+  },
+  {
+    id: "f5g8h9i0-1a2b-4c3d-b5e6-9f0a1b2c3d4e",
+    name: "Urban Fitness Gym",
+    email: "contact@urbanfitness.com",
+    address: "654 Workout Lane, Chicago, IL",
+    phone: "+1 312-555-0133",
+    opening_hours: "Mon-Fri 5:00-23:00, Sat-Sun 6:00-22:00",
+    image_url: "/businesses/urban-fitness.png",
+  },
+];
+
+export { users, customers, invoices, revenue, businesses };

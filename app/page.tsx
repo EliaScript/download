@@ -4,11 +4,48 @@ import Link from "next/link";
 import styles from "@/app/ui/home.module.css";
 import { lusitana } from "@/app/ui/fonts";
 import Image from "next/image";
+import { fetchBusinesses } from "./lib/data";
+import { BusinessCard } from "@/app/ui/businesses/business-card";
+import Search from "@/app/ui/search";
+import Table from "@/app/ui/businesses/table";
 
-export default function Page() {
+
+
+
+export default async function Page(props: {
+  searchParams?: Promise<{
+    query?: string;
+    page?: string;
+  }>;
+}) {
+  const searchParams = await props.searchParams;
+  const query = searchParams?.query || "";
+  const currentPage = Number(searchParams?.page) || 1;
+  const businesses = await fetchBusinesses();
+
   return (
     <main className="flex min-h-screen flex-col p-6">
-      <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
+      <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
+        <Search placeholder="Search Businesses..." />
+        
+      </div>
+      <Table query={query} currentPage={currentPage} />
+      <h1 className="text-2xl font-bold mb-6">Businesses</h1>
+
+      <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        {businesses.map((biz) => (
+          <BusinessCard
+            key={biz.id}
+            name={biz.name}
+            address={biz.address}
+            email={biz.email}
+            phone={biz.phone}
+            opening_hours={biz.opening_hours}
+            image_url={biz.image_url}
+          />
+        ))}
+      </div>
+      {/* <div className="flex h-20 shrink-0 items-end rounded-lg bg-blue-500 p-4 md:h-52">
         <AcmeLogo />
       </div>
       <div className="mt-4 flex grow flex-col gap-4 md:flex-row">
@@ -32,7 +69,7 @@ export default function Page() {
         </div>
         <div className="flex items-center justify-center p-6 md:w-3/5 md:px-28 md:py-12">
           {/* Add Hero Images Here */}
-          <Image
+      {/* <Image
             src="/hero-desktop.png"
             width={1000}
             height={760}
@@ -46,8 +83,7 @@ export default function Page() {
             className="block md:hidden"
             alt="Screenshots of the dashboard project showing desktop version"
           />
-        </div>
-      </div>
+        </div> */}
     </main>
   );
 }
